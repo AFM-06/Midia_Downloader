@@ -42,6 +42,43 @@ public class BaixadorDeMusica {
         }
     }
 
+    public void mp3_format(){
+        try{
+            Scanner ler = new Scanner(System.in);
+            String link;
+            System.out.println("Qual o link da música?");
+            link = ler.nextLine();
+
+            ProcessBuilder builder = new ProcessBuilder(
+                    "yt-dlp",
+                    "-x",
+                    "--audio-format", "mp3",
+                    "--add-metadata",
+                    "--embed-thumbnail",
+                    "--no-playlist",
+                    "-o", "%(title)s.%(ext)s",
+                    link
+            );
+            String homeUsuario = System.getProperty("user.home");
+            builder.directory(new File(homeUsuario + "/Downloads"));
+
+            builder.redirectErrorStream(true);
+
+            Process processo = builder.start();
+
+            BufferedReader leitor = new BufferedReader(new InputStreamReader(processo.getInputStream()));
+            String linha;
+            while ((linha = leitor.readLine()) != null) {
+                System.out.println(linha);
+            }
+            int codigoSaida = processo.waitFor();
+            System.out.println("\nProcesso finalizado com código: " + codigoSaida);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void video_instagram(){
         //yt-dlp -U (COMANDO PARA ATUALIZAR O YT)
         try{
@@ -75,12 +112,5 @@ public class BaixadorDeMusica {
         }catch(Exception e){
             e.printStackTrace();
         }
-
-
     }
-
-
-
-
-
 }
